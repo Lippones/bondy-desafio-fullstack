@@ -1,7 +1,8 @@
 'use client'
 import { Button } from "@/components/button"
 import { Input } from "@/components/input"
-import { gql, useMutation } from "@apollo/client"
+import { AUTHENTICATE_MUTATION } from "@/graphql/mutations/authenticate-mutation"
+import { useMutation } from "@apollo/client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -13,19 +14,8 @@ const loginSchema = z.object({
 
 type LoginData = z.infer<typeof loginSchema>
 
-const loginMutation = gql`
-  mutation Authenticate($email: String!, $password: String!) {
-    authenticate(email: $email, password: $password) {
-      id
-      email
-      name
-      company
-    }
-  }
-`
-
 export function LoginForm() {
-  const [authenticate] = useMutation(loginMutation)
+  const [authenticate] = useMutation(AUTHENTICATE_MUTATION)
   
   const { register, handleSubmit, setError, formState:{ errors, isSubmitting } } = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
